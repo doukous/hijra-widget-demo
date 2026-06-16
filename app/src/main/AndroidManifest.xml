@@ -28,7 +28,16 @@
             </intent-filter>
             <meta-data
                     android:name="android.appwidget.provider"
-                    android:resource="@xml/hijra_widget_demo_info" />
+                    android:resource="@xml/today_date_widget_info" />
+        </receiver>
+        <receiver android:name=".widgets.GeneralCalendar.Receiver"
+                  android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                    android:name="android.appwidget.provider"
+                    android:resource="@xml/general_calendar_widget_info" />
         </receiver>
     </application>
 
