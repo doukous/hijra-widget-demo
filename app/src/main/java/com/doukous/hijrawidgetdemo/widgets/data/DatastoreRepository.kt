@@ -13,9 +13,11 @@ class DatastoreRepository(
         val date = DateHelper()
 
         context.dataStore.updateData {
-            it.toMutablePreferences().also { preferences ->
-                preferences[FRENCH_DATE] = date.frDateStr
-                preferences[ARABIC_MONTH] = date.arDateStr
+            it.toMutablePreferences().also {
+                prefs ->
+                prefs[FRENCH_DATE] = date.frDateStr
+                prefs[ARABIC_MONTH] = date.arDateStr
+                prefs[TIME] = date.timeStr
             }
         }
     }

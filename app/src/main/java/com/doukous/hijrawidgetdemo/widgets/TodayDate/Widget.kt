@@ -20,33 +20,32 @@ import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
+import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.doukous.hijrawidgetdemo.R
 import com.doukous.hijrawidgetdemo.widgets.data.ARABIC_MONTH
-import com.doukous.hijrawidgetdemo.widgets.data.DatastoreRepository
 import com.doukous.hijrawidgetdemo.widgets.data.FRENCH_DATE
+import com.doukous.hijrawidgetdemo.widgets.data.TIME
 import com.doukous.hijrawidgetdemo.widgets.data.dataStore
 import kotlinx.coroutines.flow.first
 
 class Widget: GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val repository = DatastoreRepository(context)
-        repository.initialize()
-
         val prefs = context.dataStore.data.first()
         val frDate = prefs[FRENCH_DATE] ?: "not available"
         val arMonth = prefs[ARABIC_MONTH] ?: "undefined"
+        val time = prefs[TIME] ?: "no time"
 
         provideContent {
-            WidgetContent(frDate, arMonth)
+            WidgetContent(frDate, arMonth, time)
         }
     }
 
     @Composable
-    fun WidgetContent(french_date: String, month_in_arabic: String) {
+    fun WidgetContent(french_date: String, month_in_arabic: String, time: String) {
         Column(
             GlanceModifier
                 .fillMaxSize(),
@@ -57,17 +56,20 @@ class Widget: GlanceAppWidget() {
             TextContent(
                 month_in_arabic,
                 color = ColorProvider(Color.White, Color.White),
-                textFontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                textFontSize = 20.sp,
                 modifier = GlanceModifier
                     .background(R.color.teal_700)
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
+                    .padding(vertical = 4.dp, horizontal = 6.dp)
             )
+
             Spacer(
                 GlanceModifier
                     .height(4.dp)
             )
+
             TextContent(
-                french_date.uppercase(),
+                "${french_date.uppercase()} at $time",
                 modifier = GlanceModifier
                     .background(Color.White)
                     .padding(6.dp)
@@ -79,6 +81,7 @@ class Widget: GlanceAppWidget() {
     @Composable
     private fun TextContent(
         text: String,
+        fontWeight: FontWeight = FontWeight.Normal,
         color: ColorProvider = ColorProvider(Color.Black, Color.Black),
         textFontSize: TextUnit = 14.sp,
         modifier: GlanceModifier = GlanceModifier.Companion
@@ -87,6 +90,7 @@ class Widget: GlanceAppWidget() {
             text,
             style = TextStyle(
                 color = color,
+                fontWeight = fontWeight,
                 fontSize = textFontSize,
                 textAlign = TextAlign.Center
             ),

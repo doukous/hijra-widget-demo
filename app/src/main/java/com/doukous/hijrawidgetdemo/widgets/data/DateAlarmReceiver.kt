@@ -1,0 +1,29 @@
+package com.doukous.hijrawidgetdemo.widgets.data
+
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import androidx.glance.appwidget.GlanceAppWidgetManager
+import com.doukous.hijrawidgetdemo.widgets.TodayDate.Widget
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+class DateAlarmReceiver: BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val manager = GlanceAppWidgetManager(context)
+        val widget = Widget()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val repository = DatastoreRepository(context)
+            repository.updateDates()
+
+            val glanceIds = manager.getGlanceIds(widget.javaClass)
+            glanceIds.forEach {
+                glanceId -> widget.update(context, glanceId)
+            }
+        }
+
+        setUpAlarm(context)
+    }
+}

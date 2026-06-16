@@ -19,7 +19,7 @@ class Widget: GlanceAppWidget() {
             WidgetContent()
         }
     }
-z
+
     @Composable
     fun WidgetContent() {
         Text(
