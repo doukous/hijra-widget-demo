@@ -25,19 +25,28 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.doukous.hijrawidgetdemo.R
-import com.doukous.hijrawidgetdemo.ui.state.DateUiState
+import com.doukous.hijrawidgetdemo.widgets.data.ARABIC_MONTH
+import com.doukous.hijrawidgetdemo.widgets.data.DatastoreRepository
+import com.doukous.hijrawidgetdemo.widgets.data.FRENCH_DATE
+import com.doukous.hijrawidgetdemo.widgets.data.dataStore
+import kotlinx.coroutines.flow.first
 
 class Widget: GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val repository = DatastoreRepository(context)
+        repository.initialize()
+
+        val prefs = context.dataStore.data.first()
+        val frDate = prefs[FRENCH_DATE] ?: "not available"
+        val arMonth = prefs[ARABIC_MONTH] ?: "undefined"
+
         provideContent {
-            WidgetContent()
+            WidgetContent(frDate, arMonth)
         }
     }
 
     @Composable
-    fun WidgetContent() {
-        val dateUiState = DateUiState()
-
+    fun WidgetContent(french_date: String, month_in_arabic: String) {
         Column(
             GlanceModifier
                 .fillMaxSize(),
@@ -46,7 +55,7 @@ class Widget: GlanceAppWidget() {
 
         ) {
             TextContent(
-                dateUiState.arDateStr,
+                month_in_arabic,
                 color = ColorProvider(Color.White, Color.White),
                 textFontSize = 18.sp,
                 modifier = GlanceModifier
@@ -58,7 +67,7 @@ class Widget: GlanceAppWidget() {
                     .height(4.dp)
             )
             TextContent(
-                dateUiState.frDateStr.uppercase(),
+                french_date.uppercase(),
                 modifier = GlanceModifier
                     .background(Color.White)
                     .padding(6.dp)
