@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.appwidget.GlanceAppWidget
@@ -14,8 +15,12 @@ import androidx.glance.color.ColorProvider
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
 import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
 import androidx.glance.layout.size
+import androidx.glance.layout.width
 import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
@@ -24,17 +29,17 @@ import com.doukous.hijrawidgetdemo.widgets.data.AppDate
 
 
 class Widget: GlanceAppWidget() {
-
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val appDate = AppDate()
+        val daysList = appDate.getDaysList()
 
         provideContent {
-            WidgetContent(appDate)
+            WidgetContent(appDate, daysList)
         }
     }
 
     @Composable
-    fun WidgetContent(appDate: AppDate) {
+    fun WidgetContent(appDate: AppDate, daysList: MutableList<Int?>) {
         Column(
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -42,6 +47,29 @@ class Widget: GlanceAppWidget() {
                 .background(Color.White)
                 .fillMaxSize()
         ) {
+            Row(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = GlanceModifier
+                    .fillMaxWidth()
+                    .height(24.dp)
+            ){
+                Text(
+                    appDate.enMonthStr.uppercase(),
+                )
+
+                Spacer(
+                    GlanceModifier
+                        .width(24.dp)
+                )
+
+                Text(
+                    appDate.arMonthStr,
+                    style = TextStyle(
+                        fontSize = 16.sp
+                    )
+                )
+            }
+
             Row(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -63,14 +91,10 @@ class Widget: GlanceAppWidget() {
                     Row(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        (
-                                week * 7 + 1
-                                        ..
-                                        if (week + 1 * 7 < appDate.todayDateHijrah.lengthOfMonth())
-                                                (week + 1) * 7 else appDate.todayDateHijrah.lengthOfMonth()
-                        )
+                        daysList
+                            .subList(week * 7, (week + 1) * 7)
                             .map { day ->
-                            if (day == appDate.hijraDay)
+                            if (day == appDate.dayNumber)
                                 Text(
                                     day.toString(),
                                     style = TextStyle(
@@ -84,7 +108,7 @@ class Widget: GlanceAppWidget() {
                                 )
                             else
                                 Text(
-                                    day.toString(),
+                                    day?.toString() ?: "",
                                     style = TextStyle(textAlign = TextAlign.Center),
                                     modifier = GlanceModifier
                                         .size(24.dp)
