@@ -15,9 +15,6 @@ class DateAlarmReceiver: BroadcastReceiver() {
         val widget = Widget()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val repository = DatastoreRepository(context)
-            repository.updateDates()
-
             val glanceIds = manager.getGlanceIds(widget.javaClass)
             glanceIds.forEach {
                 glanceId -> widget.update(context, glanceId)

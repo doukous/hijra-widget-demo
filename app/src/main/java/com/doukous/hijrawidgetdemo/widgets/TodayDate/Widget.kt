@@ -26,26 +26,19 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.doukous.hijrawidgetdemo.R
-import com.doukous.hijrawidgetdemo.widgets.data.ARABIC_MONTH
-import com.doukous.hijrawidgetdemo.widgets.data.FRENCH_DATE
-import com.doukous.hijrawidgetdemo.widgets.data.TIME
-import com.doukous.hijrawidgetdemo.widgets.data.dataStore
-import kotlinx.coroutines.flow.first
+import com.doukous.hijrawidgetdemo.widgets.data.AppDate
 
 class Widget: GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val prefs = context.dataStore.data.first()
-        val frDate = prefs[FRENCH_DATE] ?: "not available"
-        val arMonth = prefs[ARABIC_MONTH] ?: "undefined"
-        val time = prefs[TIME] ?: "no time"
+        val appDate = AppDate()
 
         provideContent {
-            WidgetContent(frDate, arMonth, time)
+            WidgetContent(appDate.dateStr, appDate.arMonthStr)
         }
     }
 
     @Composable
-    fun WidgetContent(french_date: String, month_in_arabic: String, time: String) {
+    fun WidgetContent(enDate: String, monthInArabic: String) {
         Column(
             GlanceModifier
                 .fillMaxSize(),
@@ -54,7 +47,7 @@ class Widget: GlanceAppWidget() {
 
         ) {
             TextContent(
-                month_in_arabic,
+                monthInArabic,
                 color = ColorProvider(Color.White, Color.White),
                 fontWeight = FontWeight.Bold,
                 textFontSize = 20.sp,
@@ -69,7 +62,7 @@ class Widget: GlanceAppWidget() {
             )
 
             TextContent(
-                "${french_date.uppercase()} at $time",
+                enDate.uppercase(),
                 modifier = GlanceModifier
                     .background(Color.White)
                     .padding(6.dp)
