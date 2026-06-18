@@ -31,15 +31,14 @@ import com.doukous.hijrawidgetdemo.widgets.data.AppDate
 class Widget: GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val appDate = AppDate()
-        val daysList = appDate.getDaysList()
 
         provideContent {
-            WidgetContent(appDate, daysList)
+            WidgetContent(appDate)
         }
     }
 
     @Composable
-    fun WidgetContent(appDate: AppDate, daysList: MutableList<Int?>) {
+    fun WidgetContent(appDate: AppDate) {
         Column(
             verticalAlignment = Alignment.CenterVertically,
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,54 +46,65 @@ class Widget: GlanceAppWidget() {
                 .background(Color.White)
                 .fillMaxSize()
         ) {
-            Row(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = GlanceModifier
-                    .fillMaxWidth()
-                    .height(24.dp)
-            ){
-                Text(
-                    appDate.enMonthStr.uppercase(),
-                )
 
-                Spacer(
-                    GlanceModifier
-                        .width(24.dp)
-                )
+            CalendarHeader(appDate.enMonthStr, appDate.arMonthStr)
+            CalendarTable(appDate.daysInitials, appDate.getDaysList(), appDate.dayNumber)
+        }
+    }
 
+    @Composable
+    fun CalendarHeader(enMonth: String, arMonth: String) {
+        Row(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = GlanceModifier
+                .fillMaxWidth()
+                .height(24.dp)
+        ){
+            Text(
+                enMonth.uppercase(),
+            )
+
+            Spacer(
+                GlanceModifier
+                    .width(24.dp)
+            )
+
+            Text(
+                arMonth,
+                style = TextStyle(
+                    fontSize = 16.sp
+                )
+            )
+        }
+    }
+
+    @Composable
+    fun CalendarTable(daysInitials: List<String>, daysList: MutableList<Int?>, currentDayNumber: Int) {
+        Row(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            daysInitials.map { letter ->
                 Text(
-                    appDate.arMonthStr,
+                    letter,
                     style = TextStyle(
-                        fontSize = 16.sp
-                    )
+                        textAlign = TextAlign.Center,
+                        color = ColorProvider(day=Color.Gray, night=Color.Gray)
+                    ),
+                    modifier = GlanceModifier
+                        .size(24.dp)
                 )
             }
+        }
 
-            Row(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                appDate.daysInitials.map { letter ->
-                    Text(
-                        letter,
-                        style = TextStyle(
-                            textAlign = TextAlign.Center,
-                            color = ColorProvider(day=Color.Gray, night=Color.Gray)
-                        ),
-                        modifier = GlanceModifier
-                            .size(24.dp)
-                    )
-                }
-            }
-
-            (0..4).map { week ->
-                Column(modifier = GlanceModifier) {
-                    Row(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        daysList
-                            .subList(week * 7, (week + 1) * 7)
-                            .map { day ->
-                            if (day == appDate.dayNumber)
+        (0..4).map { week ->
+            Column(modifier = GlanceModifier) {
+                Row(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    daysList
+                        .subList(week * 7, (week + 1) * 7)
+                        .map { day ->
+                            if (day == currentDayNumber)
                                 Text(
                                     day.toString(),
                                     style = TextStyle(
@@ -114,7 +124,6 @@ class Widget: GlanceAppWidget() {
                                         .size(24.dp)
                                 )
                         }
-                    }
                 }
             }
         }
