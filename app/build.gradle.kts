@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20"
-    id("com.google.devtools.ksp")
 }
 
 android {
@@ -39,7 +37,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.17.0")
+    implementation(libs.androidx.core.ktx.v1170)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -58,19 +56,7 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // jetpack glance
-    implementation("androidx.glance:glance-appwidget:1.1.1")
-    implementation("androidx.glance:glance-material3:1.1.1")
-    implementation("androidx.glance:glance-material:1.1.1")
-
-    // compose viewmodel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-
-    // datastore with json serialization
-    implementation("androidx.datastore:datastore:1.2.1")
-    implementation("androidx.datastore:datastore-core:1.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-
-    // hilt
-    implementation("com.google.dagger:hilt-android:2.59.2")
-    annotationProcessor("com.google.dagger:hilt-compiler:2.59.2")
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
+    implementation(libs.androidx.glance.material)
 }
